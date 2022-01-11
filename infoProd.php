@@ -67,6 +67,44 @@ include './library/consulSQL.php';
                     }
                 ?>
             </div>
+            <div class="container">
+                <h3 class="text-center">Reseñas del producto</h3>
+                    <?php
+                    $productorev= ejecutarSQL::consultar("SELECT reseñas.reseña,cliente.Nombre FROM reseñas INNER JOIN cliente ON cliente.NIT=reseñas.NIT INNER JOIN producto ON producto.id=reseñas.idProd WHERE CodigoProd='".$CodigoProducto."'");
+                        echo '<table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th>Usuario</th>
+                                <th>Reseña</th>
+                              </tr>
+                            </thead>
+                            <tbody>';
+                            while($filarev=mysqli_fetch_array($productorev, MYSQLI_ASSOC)){
+                            echo '<tr>
+                              <td>' .$filarev['Nombre']. '</td>
+                              <td>' .$filarev['reseña']. '</td>
+                            </tr>';
+                          }
+                        echo '</tbody>
+                      </table><br><br>';
+                    if($_SESSION['nombreAdmin']!="" || $_SESSION['nombreUser']!=""){
+                        $info= ejecutarSQL::consultar("SELECT * FROM producto WHERE CodigoProd='".$CodigoProducto."'");
+                        while($filarevs=mysqli_fetch_array($info, MYSQLI_ASSOC)){
+                            echo '<form action="process/reseña.php" method="POST" class="FormCatElec" data-form="">
+                                <input type="hidden" value="'.$filarevs['id'].'" name="idproducto">
+                                <label class="text-center"><h4>Agregue su comentario</h4></label>
+                                <div class="form-group">
+                                <textarea class="form-control" name="reseña"></textarea>
+                                </div>
+                                    <button class="btn btn-lg btn-raised btn-success btn-block"><i class="fa fa-comment"></i>&nbsp;&nbsp; Añadir reseña</button>
+                                    </form>
+                                <div class="ResForm"></div>';
+                        } 
+                    }else{
+                        echo '<p class="text-center"><small>Para dar una reseña debes iniciar sesion</small></p><br>';
+                    }
+                    ?>
+            </div>
         </div>
     </section>
 
